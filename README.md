@@ -1,6 +1,26 @@
-# Learning React Router
+# Learning React Router 6
 
-## Difference between react-router and react-router-dom
+- with react-router-dom 6 word 'exact' for the paths in Routes, Links, and NavLinks is no more used, the default behavior of routes is to look for an exact match
+- instead of Switch component wrap all Route components in Routes component:
+```
+<BrowserRouter>
+	<Routes>
+		<Route path='/' element={<Home />} />			
+		<Route path='/contact' element={<Contact />} />
+		<Route path='/articles/:id' element={<SingleArticlePage />} />
+		{/*  redirect after 3 sec */}
+		<Route path='*' element={<PageNotFound />} />
+		{/* auto redirect */}
+		<Route path='/redirect' element={<Navigate to='/' />} />
+		{/* nested Routes in app component */}
+		<Route path='/about/*' element={<About />}>
+		<Route path='nested' element={<Nested />} />
+		</Route>
+	</Routes>
+</BrowserRouter>
+````
+
+## Difference between react-router and react-router-dom explained:
 
 [Article from Syncfusion](https://www.syncfusion.com/blogs/post/react-router-vs-react-router-dom.aspx)
 
@@ -23,13 +43,13 @@ Links in a navbar which adds class 'active' to a link/anchor tag which is active
 ```
 
 2. Inside of parent component (About) define nesting child component route (Nested)
-   Define nesting in App component
+- Define nesting in App component
 
 ### In the App component inside of Routes add
 
 `	<Route path='/about/*' element={<About />} /> `
 
-Define nested component routes in parent component
+- Define nested component routes in parent component
 
 ### In the About component add
 
@@ -67,7 +87,14 @@ There are two ways of doing redirect:
 Example: /articles/:id (id is parameter)
 
 - use useParams hook to get params from url
-  `const params = useParams()`
+
+`const params = useParams()` -- params.id will give the value of id param
+
+or
+
+` const { id } = useParams()` -- destructure the params obj and get just the value of id
+
+  
 
 ## Get query params from URL
 
