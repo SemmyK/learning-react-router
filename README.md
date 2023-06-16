@@ -1,70 +1,84 @@
-# Getting Started with Create React App
+# Learning React Router
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Difference between react-router and react-router-dom
 
-## Available Scripts
+[Article from Syncfusion](https://www.syncfusion.com/blogs/post/react-router-vs-react-router-dom.aspx)
 
-In the project directory, you can run:
+## Link from react-router-dom
 
-### `npm start`
+Creates anchor tag but does not cause reload of the page when clicked, it redirects without reloading the whole website
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## NavLink from react-router-dom
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Links in a navbar which adds class 'active' to a link/anchor tag which is active, when we are on a page that the NavLink represents. To make visible which one is active write a style for anchor tags with class active (a.active)
 
-### `npm test`
+## Two ways of nesting routes
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Inside of the App component define nesting and nested components routes
 
-### `npm run build`
+```
+<Route path='/about/*' element={<About />}>
+	<Route path='nested' element={<Nested />} />
+</Route>
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Inside of parent component (About) define nesting child component route (Nested)
+   Define nesting in App component
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### In the App component inside of Routes add
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`	<Route path='/about/*' element={<About />} /> `
 
-### `npm run eject`
+Define nested component routes in parent component
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### In the About component add
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+<Routes>
+	<Route path='nested' element={<Nested />} />
+</Routes>
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Redirects
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+There are two ways of doing redirect:
 
-## Learn More
+1. Auto redirect - using Navigate component - in App component where all routes are define add:
+   `<Route path='*' element={<Navigate to='/' />} />`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- this will cause auto redirect if we go to any route that is not defined in Routes
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Redirect after showing Not found Component for a few seconds - using useNavigate hook - in NotFoundPage component add code:
 
-### Code Splitting
+```
+	const navigate = useNavigate()
+	useEffect(() => {
+		setTimeout(() => navigate('/'), 3000)
+	}, [navigate])
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
 
-### Analyzing the Bundle Size
+- this will redirect after 3sec
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Get params from the URL
 
-### Making a Progressive Web App
+### Params - everyhing that comes after '/' in the url
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Example: /articles/:id (id is parameter)
 
-### Advanced Configuration
+- use useParams hook to get params from url
+  `const params = useParams()`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Get query params from URL
 
-### Deployment
+### Query params - everything that is after '?' in URL in a form of key-value pairs
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Example: /articles?name=mario (name=mario is query parameter)
 
-### `npm run build` fails to minify
+```
+ const queryString = useLocation().search //gives back "name=mario"
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  const queryParams = new URLSearchParams(queryString)
+
+  const name = queryParams.get("name") //gives back "mario"
+```
